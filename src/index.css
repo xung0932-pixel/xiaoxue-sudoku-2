@@ -1,0 +1,86 @@
+@import "tailwindcss";
+
+@layer base {
+  body {
+    @apply bg-slate-950 text-slate-100 antialiased selection:bg-cyan-500/30 selection:text-cyan-200;
+    font-family: 'Noto Serif TC', serif, system-ui;
+    background-color: #050b14;
+    overflow-x: hidden;
+  }
+}
+
+@keyframes celestial-pulse {
+  0%, 100% {
+    box-shadow: 0 0 15px rgba(56, 189, 248, 0.25), inset 0 0 15px rgba(56, 189, 248, 0.15);
+  }
+  50% {
+    box-shadow: 0 0 28px rgba(168, 85, 247, 0.4), inset 0 0 25px rgba(56, 189, 248, 0.3);
+  }
+}
+
+@keyframes tribulation-flash {
+  0% {
+    opacity: 0;
+  }
+  20% {
+    opacity: 0.95;
+    background: radial-gradient(circle, rgba(236, 72, 153, 0.6) 0%, rgba(147, 51, 234, 0.8) 40%, rgba(15, 23, 42, 0) 80%);
+  }
+  40% {
+    opacity: 0.2;
+  }
+  60% {
+    opacity: 0.85;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes screen-shake-heavy {
+  0% { transform: translate(0, 0) rotate(0deg); }
+  15% { transform: translate(-6px, 5px) rotate(-1deg); }
+  30% { transform: translate(7px, -4px) rotate(1deg); }
+  45% { transform: translate(-5px, -6px) rotate(-0.5deg); }
+  60% { transform: translate(6px, 4px) rotate(0.8deg); }
+  75% { transform: translate(-3px, 3px) rotate(-0.5deg); }
+  90% { transform: translate(2px, -2px) rotate(0.2deg); }
+  100% { transform: translate(0, 0) rotate(0deg); }
+}
+
+@keyframes cloud-float {
+  0%, 100% {
+    transform: translateY(0px) scale(1);
+  }
+  50% {
+    transform: translateY(-8px) scale(1.02);
+  }
+}
+
+.animate-cloud-float {
+  animation: cloud-float 6s ease-in-out infinite;
+}
+
+.animate-screen-shake {
+  animation: screen-shake-heavy 0.45s cubic-bezier(.36,.07,.19,.97) both;
+}
+
+.celestial-border {
+  border-image: linear-gradient(to bottom right, #38bdf8, #818cf8, #c084fc, #38bdf8) 1;
+}
+
+/* Custom delicate scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: rgba(15, 23, 42, 0.6);
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(56, 189, 248, 0.3);
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(56, 189, 248, 0.6);
+}

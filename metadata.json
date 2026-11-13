@@ -1,0 +1,6 @@
+{
+  "name": "小雪的九宮靈陣2",
+  "description": "沉浸式修仙數獨遊戲。與傲嬌仙子小雪共參九宮天劫，以無上神識推演靈陣，渡劫登仙！",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

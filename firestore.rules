@@ -1,0 +1,59 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Global Safety Net
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    function isValidUserProfile(data) {
+      return data.keys().hasAll(['userId', 'unlockedLevel', 'totalStars']) &&
+        data.keys().hasOnly(['userId', 'displayName', 'photoURL', 'unlockedLevel', 'totalStars', 'cultivationRealm', 'createdAt', 'updatedAt']) &&
+        data.userId is string && data.userId == request.auth.uid &&
+        data.unlockedLevel is number && data.unlockedLevel >= 1 && data.unlockedLevel <= 100 &&
+        data.totalStars is number && data.totalStars >= 0 &&
+        (!('displayName' in data) || (data.displayName is string && data.displayName.size() <= 64)) &&
+        (!('photoURL' in data) || (data.photoURL is string && data.photoURL.size() <= 512)) &&
+        (!('cultivationRealm' in data) || (data.cultivationRealm is string && data.cultivationRealm.size() <= 64));
+    }
+
+    function isValidLevelProgress(data) {
+      return data.keys().hasAll(['userId', 'levelId', 'stars', 'bestTimeSeconds', 'completed']) &&
+        data.keys().hasOnly(['userId', 'levelId', 'stars', 'bestTimeSeconds', 'completed', 'updatedAt']) &&
+        data.userId is string && data.userId == request.auth.uid &&
+        data.levelId is number && data.levelId >= 1 && data.levelId <= 100 &&
+        data.stars is number && data.stars >= 0 && data.stars <= 3 &&
+        data.bestTimeSeconds is number && data.bestTimeSeconds >= 0 &&
+        data.completed is bool;
+    }
+
+    match /users/{userId} {
+      allow get: if isSignedIn() && isValidId(userId) && request.auth.uid == userId;
+      allow list: if isSignedIn() && resource.data.userId == request.auth.uid;
+      allow create: if isSignedIn() && isValidId(userId) && request.auth.uid == userId && isValidUserProfile(incoming());
+      allow update: if isSignedIn() && isValidId(userId) && request.auth.uid == userId && isValidUserProfile(incoming()) && incoming().userId == existing().userId;
+
+      match /levelProgress/{levelId} {
+        allow get: if isSignedIn() && isValidId(userId) && isValidId(levelId) && request.auth.uid == userId;
+        allow list: if isSignedIn() && isValidId(userId) && request.auth.uid == userId;
+        allow create, update: if isSignedIn() && isValidId(userId) && isValidId(levelId) && request.auth.uid == userId && isValidLevelProgress(incoming());
+      }
+    }
+  }
+}

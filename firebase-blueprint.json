@@ -1,0 +1,92 @@
+{
+  "entities": {
+    "UserProfile": {
+      "title": "UserProfile",
+      "description": "Stores user cultivation level, unlocked levels, stars, and records",
+      "type": "object",
+      "properties": {
+        "userId": {
+          "type": "string",
+          "description": "The unique Firebase Auth UID of the player"
+        },
+        "displayName": {
+          "type": "string",
+          "description": "Cultivator Daoist title / display name",
+          "maxLength": 64
+        },
+        "photoURL": {
+          "type": "string",
+          "description": "Player avatar URL",
+          "maxLength": 512
+        },
+        "unlockedLevel": {
+          "type": "number",
+          "description": "Highest level unlocked (starts at 1)"
+        },
+        "totalStars": {
+          "type": "number",
+          "description": "Accumulated spirit stars"
+        },
+        "cultivationRealm": {
+          "type": "string",
+          "description": "Cultivation stage name, e.g. Qi Condensation, Foundation, Golden Core",
+          "maxLength": 64
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Account initialization timestamp"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Latest progress sync timestamp"
+        }
+      },
+      "required": ["userId", "unlockedLevel", "totalStars"]
+    },
+    "LevelProgress": {
+      "title": "LevelProgress",
+      "description": "Record of a completed level in the Nine Palaces Spiritual Array",
+      "type": "object",
+      "properties": {
+        "userId": {
+          "type": "string",
+          "description": "The UID of the player"
+        },
+        "levelId": {
+          "type": "number",
+          "description": "Level number"
+        },
+        "stars": {
+          "type": "number",
+          "description": "Stars earned (1 to 3)"
+        },
+        "bestTimeSeconds": {
+          "type": "number",
+          "description": "Best clear time in seconds"
+        },
+        "completed": {
+          "type": "boolean",
+          "description": "Whether the level is beaten"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "When level was last cleared"
+        }
+      },
+      "required": ["userId", "levelId", "stars", "bestTimeSeconds", "completed"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "UserProfile",
+      "description": "Player's master cultivation progress document"
+    },
+    "/users/{userId}/levelProgress/{levelId}": {
+      "schema": "LevelProgress",
+      "description": "Detailed progress and star ratings for each level"
+    }
+  }
+}
